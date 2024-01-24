@@ -4,6 +4,8 @@
     <p v-if="showProcess2" id="messageTwo">
       {{ msg2 }}
     </p>
+    <p id="terminal"></p>
+    <section class="images" id="image1"></section>
     <p v-if="showProcess" id="messageThree">
       {{ msg3 }}
     </p>
@@ -14,7 +16,7 @@
     <section v-if="!showProcess2" id="overalExplanation">
       {{ overallOutputExplanation }} {{ overallSummaryOutput }}
     </section>
-    <input
+    <!-- <input
       id="APIinput"
       type="text"
       v-model="apiKEY"
@@ -26,22 +28,29 @@
     >
     <br /><button v-if="showAPI" id="apiButton" @click="registerAPI">
       Set API Key
-    </button>
+    </button> -->
     <br /><br /><br />
     <input
       v-if="showProcess"
       id="URLInput"
       type="input"
       v-model="urlToScrape"
-      placeholder="Enter URL to Crawl"
+      placeholder="Enter URL to Visualize"
     />
-    <p></p>
+    <p id="status">
+      <span v-if="!reveal" class="titleIsh">Image Prompt: </span>{{ status }}
+    </p>
     <button v-if="showProcess" id="startButton" @click="grabPage">
-      Crawl Website
+      Visualize
     </button>
+    <p id="pageText">
+      <span v-if="!reveal2" class="titleIsh">Original text: </span
+      >{{ pageText }}
+    </p>
     <br /><button v-if="!showPrint" id="apiButton" @click="pdfResults">
       Save Results as PDF
     </button>
+
     <!-- <button @click="renderVisuals">Overall</button> 
 
    
@@ -51,7 +60,6 @@
     <button @click="renderVisuals">Visualize</button>
  -->
 
-    <p id="terminal"></p>
     <section id="visuals" class="visuals"></section>
     <section id="specificAnalysis"></section>
     <section id="specificAnalysis2"></section>
@@ -67,14 +75,16 @@ import * as rs from "text-readability";
 //import * as cheerio from 'cheerio';
 import axios from "axios";
 import Plotly from "plotly.js-dist";
+import dotenv from "dotenv";
+dotenv.config();
 //import OpenAI from "openai";
 export default {
-  name: "discourse_crawler",
+  name: "imagination_window",
   props: {},
   data() {
     return {
-      msg: "Discourse Crawler",
-      msg2: "An AI-powered tool for performing top-level analysis of websites.",
+      msg: "Imagination Window",
+      msg2: "Visualize the worldviews of websites.",
       msg3: "",
       urlToScrape: "",
       pageText: "",
@@ -97,11 +107,14 @@ export default {
       JSON3: null,
       JSON4: null,
       moralFoundationAnalysis: "",
-      apiKEY: "",
       unique: [],
       overallSummaryOutput: "",
       overallOutputExplanation: "",
       showPrint: true,
+      reveal: true,
+      reveal2: true,
+      apiKEY: process.env.VUE_APP_ROOT_API_KEY,
+      status: "Mission statements and about pages work best.",
     };
   },
 
@@ -119,6 +132,8 @@ export default {
         "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3dqdTFidnN6enl2bmZ0b2RndGl0Y29oMWJiOHo0bDc2d3d6YnF3bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/HN6GLlUsMvue652b2w/giphy.gif";
       img.setAttribute("id", "thinkingIMG");
       document.getElementById("terminal").appendChild(img);
+      this.msg2 = "Extracting text from webpage.";
+      this.status = "";
       const url =
         "https://api.allorigins.win/raw?url=" +
         encodeURIComponent(this.urlToScrape) +
@@ -149,16 +164,9 @@ export default {
                 anchors.push(l[i].href);
               }
               if (counterTickerA === tickerA - 1) {
+                this.reveal2 = false;
                 this.pageText = htmlWithoutScripts;
-                this.anchorsForCrawl = anchors.filter(function (item, pos) {
-                  return anchors.indexOf(item) == pos;
-                });
-                console.log(this.anchorsForCrawl);
-
-                setTimeout(() => {
-                  console.log("Delayed for 2 seconds.");
-                  this.grabSubpages();
-                }, 2000);
+                this.summarizeText();
               }
             }
           }
@@ -169,214 +177,81 @@ export default {
         });
     },
 
-    grabSubpages: function () {
-      let i,
-        len = this.anchorsForCrawl.length;
-      const ticker = this.anchorsForCrawl.length;
-      const workingAnchorsArray = this.anchorsForCrawl;
+    summarizeText: function () {
+      this.msg2 = "Converting webpage text to a prompt for robot image maker.";
       const instance = this;
-      for (i = 0; i < len; i++) {
-        fire(i);
-      }
+      const client = axios.create({
+        headers: {
+          Authorization: "Bearer " + instance.apiKEY,
+        },
+      });
 
-      function fire(i) {
-        setTimeout(function () {
-          const usableURL = workingAnchorsArray[i];
-          const counterTicker = i;
+      const params = {
+        model: "gpt-3.5-turbo-instruct",
+        prompt:
+          "Summarize this text into a prompt for dall-e-3. Text:" +
+          this.pageText +
+          ".",
+        temperature: 0,
+        max_tokens: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      };
 
-          var url =
-            "https://api.allorigins.win/raw?url=" +
-            encodeURIComponent(usableURL) +
-            "&callback=?";
-          axios
-            .get(url)
-            .then((response) => {
-              const data = response.data;
-              const data2 = data.replace(/\s+/g, " ").trim();
-              const parser = new DOMParser();
-              const html = parser.parseFromString(data2, "text/html");
-              const workingHTML = html;
-              workingHTML
-                .querySelectorAll("script, style")
-                .forEach((s) => s.remove());
-              let htmlWithoutScripts = workingHTML
-                .querySelector("body")
-                .innerText.trim();
-              console.log("Crawling:" + i + " " + usableURL);
-
-              instance.msg = "Crawling";
-              instance.msg2 = workingAnchorsArray[i];
-
-              if (htmlWithoutScripts.length <= 1999) {
-                const workingActualText = htmlWithoutScripts.substring(100, 0);
-                const workingActualText2 = workingActualText.replace(/"/g, " ");
-                const actualText = workingActualText2.replace(/'/g, " ");
-                var div = document.getElementById("specificAnalysis");
-                var p = document.createElement("div");
-                p.innerHTML =
-                  '{"url":' +
-                  '"' +
-                  usableURL +
-                  '"' +
-                  "," +
-                  '"text":' +
-                  '"' +
-                  actualText +
-                  '"' +
-                  "},";
-                div.appendChild(p);
-              } else {
-                const workingActualText = htmlWithoutScripts.substring(
-                  100,
-                  2000
-                );
-                const workingActualText2 = workingActualText.replaceAll(
-                  '"',
-                  " "
-                );
-                const actualText = workingActualText2.replaceAll("'", " ");
-                var div2 = document.getElementById("specificAnalysis");
-                var p2 = document.createElement("div");
-                p2.innerHTML =
-                  '{"url":' +
-                  '"' +
-                  usableURL +
-                  '"' +
-                  "," +
-                  '"text":' +
-                  '"' +
-                  actualText +
-                  '"' +
-                  "},";
-                div2.appendChild(p2);
-              }
-              if (counterTicker === ticker - 1) {
-                setTimeout(() => {
-                  console.log("Delayed for 2 seconds.");
-                  instance.getEmotionStats();
-                }, 2000);
-              }
-            })
-            .catch((errors) => {
-              console.log(errors);
-              this.msg = errors; // Errors
-            });
-        }, 2000 * i);
-      }
+      client
+        .post("https://api.openai.com/v1/completions", params)
+        .then((result) => {
+          const rawResult = result.data.choices[0].text;
+          const rawResult2 = rawResult.replaceAll(
+            "Create a prompt for dall-e-3: ",
+            ""
+          );
+          this.reveal = false;
+          this.status = rawResult2.replaceAll('"', "");
+          this.getImageBasedOnText();
+        })
+        .catch((error) => {
+          console.log(error);
+          instance.msg = "first call " + error;
+        });
     },
 
-    getEmotionStats: function () {
-      var workingJSON = document.getElementById("specificAnalysis").innerText;
-      const middleJSON = "[" + workingJSON.slice(0, -1) + "]";
-      const workingJSON1 = JSON.parse(middleJSON);
-      let i2,
-        len2 = workingJSON1.length;
-      const ticker2 = workingJSON1.length;
-      const instance = this;
+    getImageBasedOnText: function () {
+      this.msg2 = "Rendering prompt into an image.";
+      const client = axios.create({
+        headers: {
+          Authorization: "Bearer " + this.apiKEY,
+        },
+      });
 
-      for (i2 = 0; i2 < len2; i2++) {
-        fire(i2);
-      }
+      const params = {
+        model: "dall-e-3",
+        prompt:
+          "Make an image that represents the content of the following statement. Statement: " +
+          this.status,
+        n: 1,
+        size: "1024x1024",
+      };
 
-      function fire(i2) {
-        setTimeout(function () {
-          //const usableText = JSON.stringify(this.JSON1[0].text);
-          // const dotenv = require("dotenv");
-          // dotenv.config();
+      client
+        .post("https://api.openai.com/v1/images/generations", params)
+        .then((result) => {
+          document.getElementById("thinkingIMG").remove();
+          this.imageURL1 = result.data.data[0].url;
 
-          console.log("Analyzing Emotion");
-
-          const usableURL = workingJSON1[i2].url;
-          const counterTicker2 = i2;
-          const usableText = workingJSON1[i2].text;
-
-          const client = axios.create({
-            headers: {
-              Authorization: "Bearer " + instance.apiKEY,
-            },
-          });
-
-          const params = {
-            model: "gpt-3.5-turbo-instruct",
-            prompt:
-              'Perform sentiment analysis on the following text, outputting scores between 1 and 10 for anger, fear, happiness, surprise, sadness, and disgust, returning the response in JSON only. Format as {"anger": number score,"fear": number score,"happiness": number score,"surprise": number score,"sadness": number score,"disgust": number score}. ' +
-              usableText +
-              ".",
-            temperature: 0,
-            max_tokens: 256,
-            top_p: 1,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-          };
-
-          client
-            .post("https://api.openai.com/v1/completions", params)
-            .then((result) => {
-              instance.msg = "Analyzing emotion of";
-              instance.msg2 = usableURL;
-              const rawResult = result.data.choices[0].text;
-              const justTheJSON = rawResult.substring(rawResult.indexOf("{"));
-              const pageType = "subPage";
-              console.log(i2 + ": " + justTheJSON);
-
-              const emotionResults = JSON.parse(justTheJSON);
-              instance.anger = emotionResults.anger;
-              instance.fear = emotionResults.fear;
-              instance.surprise = emotionResults.surprise;
-              instance.disgust = emotionResults.disgust;
-              instance.sadness = emotionResults.sadness;
-              instance.happiness = emotionResults.happiness;
-
-              var div = document.getElementById("specificAnalysis2");
-              var p = document.createElement("div");
-              p.innerHTML =
-                '{"pageType":' +
-                '"' +
-                pageType +
-                '"' +
-                "," +
-                '"url":' +
-                '"' +
-                usableURL +
-                '"' +
-                "," +
-                '"text":' +
-                '"' +
-                usableText +
-                '"' +
-                "," +
-                '"anger":' +
-                instance.anger +
-                "," +
-                '"fear":' +
-                instance.fear +
-                "," +
-                '"surprise":' +
-                instance.surprise +
-                "," +
-                '"disgust":' +
-                instance.disgust +
-                "," +
-                '"sadness":' +
-                instance.sadness +
-                "," +
-                '"happiness":' +
-                instance.happiness +
-                "},";
-              div.appendChild(p);
-            })
-            .catch((error) => {
-              console.log(error);
-              instance.msg = error;
-            });
-          if (counterTicker2 === ticker2 - 1) {
-            setTimeout(() => {
-              console.log("Delayed for 2 seconds.");
-              instance.getMoralFoundations();
-            }, 2000);
-          }
-        }, 500 * i2);
-      }
+          var div = document.getElementById("image1");
+          var p = document.createElement("img");
+          p.style.width = "778px";
+          p.src = this.imageURL1;
+          div.append(p);
+          this.msg2 =
+            "Process complete. Image, prompt, and starting text below.";
+        })
+        .catch((error) => {
+          console.log("image 1" + error);
+          this.msg = "image 2" + error;
+        });
     },
 
     getMoralFoundations: function () {
@@ -1326,6 +1201,16 @@ a {
   background-color: #c300ff;
 }
 
+#status {
+  color: white;
+}
+#pageText {
+  color: orange;
+}
+.titleIsh {
+  font-weight: bold;
+  font-size: 30px;
+}
 #volume-visualizer-wrapper {
   background-color: #222831;
   margin-top: 0px;
