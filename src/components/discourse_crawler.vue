@@ -231,7 +231,7 @@ export default {
         frequency_penalty: 0,
         presence_penalty: 0,
       };
-
+      //test
       client
         .post("https://api.openai.com/v1/chat/completions", params)
         .then((result) => {
