@@ -1,18 +1,18 @@
 <template>
   <div id="app">
-    <discourse_crawler/>
+    <discourse_crawler />
   </div>
 </template>
 
 <script>
-import discourse_crawler from './components/discourse_crawler.vue'
+import discourse_crawler from "./components/discourse_crawler.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    discourse_crawler
-  }
-}
+    discourse_crawler,
+  },
+};
 </script>
 
 <style>
@@ -21,8 +21,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  background-color: black;
   margin-top: 60px;
-  background-color: #2b2d42; 
 }
 </style>

@@ -1,8 +1,18 @@
 <template>
   <div id="body" class="dashboard">
     <h1 v-if="showProcess3" id="mainTitle">{{ msg }}</h1>
-    <p v-if="showProcess2" id="messageTwo">
-      {{ msg2 }}
+   <p class= "maindiv" v-if="showProcess2" id="messageTwo">
+     <section class="text" > {{ msg2 }}</section>
+      <br />
+      <span class="text" v-if="showEyes"
+        ><input
+          id="variableOneInput"
+          type="input"
+          v-model="variableOne"
+          placeholder="liberal? conservative?"
+        />
+        eyes</span
+      ><br />
     </p>
     <p id="terminal"></p>
     <section class="images" id="image1"></section>
@@ -35,7 +45,7 @@
       id="URLInput"
       type="input"
       v-model="urlToScrape"
-      placeholder="Enter URL to Visualize"
+      placeholder="Enter URL to Imagine"
     />
     <p id="status">
       <span v-if="!reveal" class="titleIsh">Image Prompt: </span>{{ status }}
@@ -83,10 +93,12 @@ export default {
   props: {},
   data() {
     return {
-      msg: "Imagination Window",
-      msg2: "Visualize the worldviews of websites.",
+      msg: "Symbolic Synthesizer",
+      msg2: "See the world through ",
       msg3: "",
-      urlToScrape: "",
+      variableOne: "",
+      showEyes: true,
+      urlToScrape: "https://www.",
       pageText: "",
       anger: 0,
       fear: 0,
@@ -127,18 +139,28 @@ export default {
 
     grabPage: function () {
       this.showProcess = false;
+      this.showEyes = false;
       let img = document.createElement("img");
       img.src =
-        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3dqdTFidnN6enl2bmZ0b2RndGl0Y29oMWJiOHo0bDc2d3d6YnF3bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/HN6GLlUsMvue652b2w/giphy.gif";
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWM2dHh5aHpkejgzZjFsd2NldjA5MndlbjR3MW0wdXB1ZG1reDBoZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/i2tUkY5YrfN85y1W0P/giphy.gif";
       img.setAttribute("id", "thinkingIMG");
       document.getElementById("terminal").appendChild(img);
-      this.msg2 = "Extracting text from webpage.";
+      this.msg2 = "Extracting text...";
       this.status = "";
-      const url =
-        "https://api.allorigins.win/raw?url=" +
-        encodeURIComponent(this.urlToScrape) +
-        "&callback=?";
+      if (!this.urlToScrape.endsWith("/")) {
+        this.urlToScrape =
+          "https://api.allorigins.win/raw?url=" +
+          encodeURIComponent(this.urlToScrape + "/");
+        console.log("slash added");
+      }
+      if (this.urlToScrape.endsWith("/")) {
+        this.urlToScrape =
+          "https://api.allorigins.win/raw?url=" +
+          encodeURIComponent(this.urlToScrape);
+        console.log("slash not added");
+      }
 
+      const url = this.urlToScrape;
       axios
         .get(url)
         .then((response) => {
@@ -166,6 +188,15 @@ export default {
               if (counterTickerA === tickerA - 1) {
                 this.reveal2 = false;
                 this.pageText = htmlWithoutScripts;
+
+                if (!this.pageText.endsWith(".")) {
+                  this.pageText = this.pageText + ".";
+                  console.log("ngtg");
+                }
+
+                if (this.pageText.endsWith(".")) {
+                  console.log("gtg");
+                }
                 this.summarizeText();
               }
             }
@@ -178,31 +209,34 @@ export default {
     },
 
     summarizeText: function () {
-      this.msg2 = "Converting webpage text to a prompt for robot image maker.";
-      const instance = this;
+      this.msg2 = "Generating image prompt from text...";
       const client = axios.create({
         headers: {
-          Authorization: "Bearer " + instance.apiKEY,
+          Authorization: "Bearer " + this.apiKEY,
         },
       });
 
       const params = {
-        model: "gpt-3.5-turbo-instruct",
-        prompt:
-          "Summarize this text into a prompt for dall-e-3. Text:" +
-          this.pageText +
-          ".",
+        model: "gpt-3.5-turbo-16k",
+        messages: [
+          {
+            role: "user",
+            content:
+              "Write a prompt for dall-e-3 based on the themes and content of this text. Text: " +
+              this.pageText,
+          },
+        ],
         temperature: 0,
         max_tokens: 256,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
       };
-
+      //test
       client
-        .post("https://api.openai.com/v1/completions", params)
+        .post("https://api.openai.com/v1/chat/completions", params)
         .then((result) => {
-          const rawResult = result.data.choices[0].text;
+          const rawResult = result.data.choices[0].message.content;
           const rawResult2 = rawResult.replaceAll(
             "Create a prompt for dall-e-3: ",
             ""
@@ -213,23 +247,31 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          instance.msg = "first call " + error;
+          this.msg = "first call " + error;
         });
     },
 
     getImageBasedOnText: function () {
-      this.msg2 = "Rendering prompt into an image.";
+      this.msg2 = "Generating image from prompt....";
       const client = axios.create({
         headers: {
           Authorization: "Bearer " + this.apiKEY,
         },
       });
-
+      //adds playmeow
+      //playMeowSound: function ()
+      //{
+      //playMeowSound: function () {
+      //const meowSound = new Audio('\project\imaginationwindow\public\cat-meow-6226.mp3');
+      //meowSound.play().catch(error => console.error('Error playing sound:', error));
+      //},
       const params = {
         model: "dall-e-3",
         prompt:
-          "Make an image that represents the content of the following statement. Statement: " +
-          this.status,
+          this.status +
+          " Render the image through " +
+          this.variableOne +
+          " eyes.",
         n: 1,
         size: "1024x1024",
       };
@@ -245,6 +287,7 @@ export default {
           p.style.width = "778px";
           p.src = this.imageURL1;
           div.append(p);
+          //this.playMeowSound();
           this.msg2 =
             "Process complete. Image, prompt, and starting text below.";
         })
@@ -581,7 +624,7 @@ export default {
                 plot_bgcolor: "#2b2d42",
                 title: "Moral Foundations",
                 font: {
-                  family: "Arial, monospace",
+                  family: "Product Sans, monospace",
                   size: 25,
                   color: "white",
                 },
@@ -847,6 +890,12 @@ export default {
   margin: auto;
   width: 65%;
 }
+
+#variableOneInput {
+  width: 100%%;
+  font-size: 24px;
+  text-align: center;
+}
 #overallMoralFoundatations {
   display: inline-block;
   margin: auto;
@@ -855,7 +904,7 @@ export default {
 
 #URLInput {
   width: 50%;
-  font-size: 30px;
+  font-size: 25px;
   text-align: center;
   background-color: #f7ec59;
   color: #252627;
@@ -878,7 +927,7 @@ export default {
 }
 
 #startButton:hover {
-  background: purple;
+  background: #007ba7;
 }
 
 #apiButton {
@@ -1316,5 +1365,17 @@ video {
   size: A3 landscape;
   counter-increment: page;
   margin: none;
+}
+.maindiv {
+
+  height: 100%;
+}
+.text {
+  background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
+  background-size: cover;
+  -webkit-background-clip: text;
+  color: #00000047;
+  font-size: 30px;
+  font-weight: bold;
 }
 </style>
