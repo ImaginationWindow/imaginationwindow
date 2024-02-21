@@ -51,7 +51,7 @@
     <p id="status">
       <span v-if="!reveal" class="titleIsh">Image Prompt: </span>{{ status }}
     </p>
-    <button v-if="showProcess" id="startButton" @click="grabPage">
+    <button v-if="showProcess" id="startButton" @click="checkForGoodToGo">
       Visualize
     </button>
     <p id="pageText">
@@ -127,6 +127,7 @@ export default {
       reveal: true,
       reveal2: true,
       apiKEY: process.env.VUE_APP_ROOT_API_KEY,
+      goodToGo: false, 
       status: "Enter a worldview and url above. Mission statements and about pages work best."
     };
   },
@@ -138,7 +139,23 @@ export default {
       this.showAPI = false;
     },
 
+    checkForGoodToGo: function () {
+     if (this.urlToScrape.endsWith("$")) {
+      this.goodToGo = true; 
+      this.urlToScrape = this.urlToScrape.slice(0, -1);
+      this.grabPage();
+     }
+     else {
+      this.goodToGo = false;
+      this.msg = "Please enter a valid url"
+     }
+    }, 
+
     grabPage: function () {
+        if (this.goodToGo == false) {
+          this.msg = "Please enter a valid url"
+        }
+      if (this.goodToGo == true) {
       this.showProcess = false;
       this.showEyes = false;
       let img = document.createElement("img");
@@ -207,6 +224,8 @@ export default {
           console.log(errors);
           this.msg = errors; // Errors and stuff
         });
+
+        } 
     },
 
     summarizeText: function () {
