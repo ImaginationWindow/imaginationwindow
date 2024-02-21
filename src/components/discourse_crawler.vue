@@ -1,16 +1,15 @@
 <template>
   <div id="body" class="dashboard">
-    <h1 v-if="showProcess3" id="mainTitle">{{ msg }}</h1>
+    <h1 class="text" v-if="showProcess3" id="mainTitle">{{ msg }}</h1>
    <p class= "maindiv" v-if="showProcess2" id="messageTwo">
-     <section class="text" > {{ msg2 }}</section>
-      <br />
+     <section  class="text"> {{ msg2 }}</section>
       <span class="text" v-if="showEyes"
         ><input
           id="variableOneInput"
           type="input"
           v-model="variableOne"
-          placeholder="liberal? conservative?"
-        />
+          placeholder="liberal?"
+        /><br>
         eyes</span
       ><br />
     </p>
@@ -39,7 +38,9 @@
     <br /><button v-if="showAPI" id="apiButton" @click="registerAPI">
       Set API Key
     </button> -->
-    <br /><br /><br />
+    
+    <br /><br />
+    
     <input
       v-if="showProcess"
       id="URLInput"
@@ -126,7 +127,7 @@ export default {
       reveal: true,
       reveal2: true,
       apiKEY: process.env.VUE_APP_ROOT_API_KEY,
-      status: "Mission statements and about pages work best.",
+      status: "Enter a worldview and url above. Mission statements and about pages work best."
     };
   },
 
@@ -243,6 +244,10 @@ export default {
           );
           this.reveal = false;
           this.status = rawResult2.replaceAll('"', "");
+          this.status = this.status +
+          " Render the image as if through " +
+          this.variableOne +
+          " eyes. Do not attempt to include text."
           this.getImageBasedOnText();
         })
         .catch((error) => {
@@ -268,10 +273,7 @@ export default {
       const params = {
         model: "dall-e-3",
         prompt:
-          this.status +
-          " Render the image through " +
-          this.variableOne +
-          " eyes.",
+          this.status,
         n: 1,
         size: "1024x1024",
       };
@@ -281,7 +283,7 @@ export default {
         .then((result) => {
           document.getElementById("thinkingIMG").remove();
           this.imageURL1 = result.data.data[0].url;
-
+          
           var div = document.getElementById("image1");
           var p = document.createElement("img");
           p.style.width = "778px";
@@ -892,9 +894,15 @@ export default {
 }
 
 #variableOneInput {
-  width: 100%%;
-  font-size: 24px;
+  width: 200px;
   text-align: center;
+   background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
+  background-size: cover;
+  -webkit-background-clip: text;
+  font-size: 35px;
+  font-weight: bold;
+  color: white; 
+  border-radius: 10px; 
 }
 #overallMoralFoundatations {
   display: inline-block;
@@ -903,12 +911,13 @@ export default {
 }
 
 #URLInput {
-  width: 50%;
+  width: 40%;
   font-size: 25px;
-  text-align: center;
-  background-color: #f7ec59;
+  text-align: left;
+  background-color: #CF9FFF;
   color: #252627;
   border: none;
+  padding-left: 5%; 
 }
 
 #APIinput {
@@ -920,10 +929,11 @@ export default {
   border: none;
 }
 #startButton {
-  background: #2f4858;
+  background: orange;
   font-size: 30px;
-  color: white;
-  border: none;
+  color: black;
+    border: none;
+
 }
 
 #startButton:hover {
@@ -1371,11 +1381,17 @@ video {
   height: 100%;
 }
 .text {
-  background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
+  background: url("https://media.giphy.com/media/l0Exe4tRgXZcvSXDy/giphy.gif");
   background-size: cover;
   -webkit-background-clip: text;
   color: #00000047;
-  font-size: 30px;
+  font-size: 40px;
   font-weight: bold;
+}
+
+#mainTitle {
+color: hotpink;
+font-size: 70px;
+
 }
 </style>
