@@ -15,6 +15,7 @@
     </p>
     <p id="terminal"></p>
     <section class="images" id="image1"></section>
+    <section class="images" id="image2"></section>
     <p v-if="showProcess" id="messageThree">
       {{ msg3 }}
     </p>
@@ -61,6 +62,7 @@
     <br /><button v-if="!showPrint" id="apiButton" @click="pdfResults">
       Save Results as PDF
     </button>
+    <p v-if="!showProcess"> <a href="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWM2dHh5aHpkejgzZjFsd2NldjA5MndlbjR3MW0wdXB1ZG1reDBoZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/i2tUkY5YrfN85y1W0P/giphy.gif">Loading Image Credit</a></p>
 
     <!-- <button @click="renderVisuals">Overall</button> 
 
@@ -162,7 +164,8 @@ export default {
       img.src =
         "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWM2dHh5aHpkejgzZjFsd2NldjA5MndlbjR3MW0wdXB1ZG1reDBoZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/i2tUkY5YrfN85y1W0P/giphy.gif";
       img.setAttribute("id", "thinkingIMG");
-      document.getElementById("terminal").appendChild(img);
+      img.style.width = "30%";
+      document.getElementById("image2").appendChild(img);
       this.msg2 = "Extracting text...";
       this.status = "";
       if (!this.urlToScrape.endsWith("/")) {
@@ -305,7 +308,7 @@ export default {
           
           var div = document.getElementById("image1");
           var p = document.createElement("img");
-          p.style.width = "778px";
+          p.style.width = "75%";
           p.src = this.imageURL1;
           div.append(p);
           //this.playMeowSound();
@@ -906,6 +909,15 @@ export default {
   display: inline-block;
 }
 
+#terminal {
+
+}
+
+#thinkingIMG {
+
+
+}
+
 #results {
   display: flex;
   margin: auto;
@@ -973,8 +985,7 @@ export default {
   color: #ff66d8;
   border: solid;
   font-size: 20px;
-  width: 75%;
-  margin: auto;
+  width: 100%;
   padding: 10px;
   display: none;
 }
