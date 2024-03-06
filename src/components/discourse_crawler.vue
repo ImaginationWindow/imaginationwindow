@@ -245,7 +245,7 @@ export default {
           {
             role: "user",
             content:
-              "Write a prompt for dall-e-3 based on the themes and content of this text. Text: " +
+              "In less than seventy five words, describe the themes and topics represented in the following text. Text: " +
               this.pageText,
           },
         ],
@@ -266,10 +266,8 @@ export default {
           );
           this.reveal = false;
           this.status = rawResult2.replaceAll('"', "");
-          this.status = this.status +
-          " Render the image as if through " +
-          this.variableOne +
-          " eyes. Do not attempt to include text."
+          this.status = "Create an image from the perspective of a " + this.variableOne +  " that represents the themes and topics described in the text. " + this.status +
+          " Do not include text in the image."
           this.getImageBasedOnText();
         })
         .catch((error) => {
