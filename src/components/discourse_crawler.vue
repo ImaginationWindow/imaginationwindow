@@ -923,15 +923,18 @@ export default {
 }
 
 #variableOneInput {
-  width: 200px;
+  width: 15%;
   text-align: center;
-   background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
+ 
+  background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
   background-size: cover;
-  -webkit-background-clip: text;
-  font-size: 35px;
+   
+  font-size: 40px;
   font-weight: bold;
   color: white; 
   border-radius: 10px; 
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(255,255,255,0.4);
 }
 #overallMoralFoundatations {
   display: inline-block;
