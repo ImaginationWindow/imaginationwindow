@@ -923,15 +923,14 @@ export default {
 }
 
 #variableOneInput {
-  width: 15%;
+  width: 35%;
   text-align: center;
  
   background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
   background-size: cover;
    
-  font-size: 40px;
+  font-size: 50px;
   font-weight: bold;
-  color: white; 
   border-radius: 10px; 
   -webkit-background-clip: text;
   -webkit-text-fill-color: rgba(255,255,255,0.4);
@@ -1416,13 +1415,14 @@ video {
   background-size: cover;
   -webkit-background-clip: text;
   color: #00000047;
-  font-size: 40px;
+  font-size: 50px;
   font-weight: bold;
+  
 }
 
 #mainTitle {
 color: hotpink;
-font-size: 70px;
+font-size: 100px;
 
 }
 </style>
