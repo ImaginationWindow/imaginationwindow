@@ -23,5 +23,8 @@ html {
   text-align: center;
   background-color: black;
   margin-top: 60px;
+  ::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
 }
 </style>
