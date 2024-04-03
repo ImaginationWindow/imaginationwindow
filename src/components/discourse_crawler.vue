@@ -1,8 +1,14 @@
 <template>
   <div id="body" class="dashboard">
-    <h1 class="text" v-if="showProcess3" id="mainTitle">{{ msg }}</h1>
-   <p class= "maindiv" v-if="showProcess2" id="messageTwo">
-     <section  class="text"> {{ msg2 }}</section>
+    <h1 class="text2" v-if="showProcess" id="mainTitle">{{ msg }}<br> {{msga}}</h1>
+   <p class= "maindiv" v-if="showProcess3" id="messageTwo">
+     <section  class="text"> {{msg4}}<br><span class="inputText" ><input
+      v-if="showProcess"
+      id="URLInput"
+      type="input"
+      v-model="urlToScrape"
+      placeholder="Enter URL to Imagine"
+    /></span><br>{{ msg2 }}</section>
       <span class="text" v-if="showEyes"
         ><input
           id="variableOneInput"
@@ -41,20 +47,19 @@
     </button> -->
     
     <br /><br />
-    
-    <input
-      v-if="showProcess"
-      id="URLInput"
-      type="input"
-      v-model="urlToScrape"
-      placeholder="Enter URL to Imagine"
-    />
+
+
+<button v-if="showProcess" id="startButton3" @click="shuffle">
+      Shuffle
+    </button><br>
+<button v-if="showProcess" id="startButton" @click="checkForGoodToGo">
+      Visualize
+    </button>
+
     <p id="status">
       <span v-if="!reveal" class="titleIsh">Image Prompt: </span>{{ status }}
     </p>
-    <button v-if="showProcess" id="startButton" @click="checkForGoodToGo">
-      Visualize
-    </button>
+    
     <p id="pageText">
       <span v-if="!reveal2" class="titleIsh">Original text: </span
       >{{ pageText }}
@@ -72,7 +77,9 @@
     <button @click="returnJSON">Return Usable JSON</button>
     <button @click="renderVisuals">Visualize</button>
  -->
-
+    <button v-if="!showProcess" id="startButton2" @click="reload">
+      Reset
+    </button>
     <section id="visuals" class="visuals"></section>
     <section id="specificAnalysis"></section>
     <section id="specificAnalysis2"></section>
@@ -96,9 +103,11 @@ export default {
   props: {},
   data() {
     return {
-      msg: "Symbolic Synthesizer",
-      msg2: "See the world through ",
+      msg: "Connotation",
+      msga: "Compressor", 
+      msg2: " through ",
       msg3: "",
+      msg4: "See ", 
       variableOne: "",
       showEyes: true,
       urlToScrape: "https://www.",
@@ -130,16 +139,70 @@ export default {
       reveal2: true,
       apiKEY: process.env.VUE_APP_ROOT_API_KEY,
       goodToGo: false, 
-      status: "Enter a worldview and url above. Mission statements and about pages work best."
+      status: ""
     };
   },
 
-  created: function () {},
+  created: function () {
+  },
+
+  mounted: function () {
+window.addEventListener("keypress", function(event) {
+  // If the user presses the "Enter" key on the keyboard
+  if (event.key === "Enter") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    document.getElementById("startButton").click();
+  }
+  
+  if (event.key === "=") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    window.location.reload()
+  }
+  
+    if (event.key === "-") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    document.getElementById("startButton3").click();
+  }
+
+});
+
+    setTimeout(() => {
+  this.shuffle();
+}, "1");
+    
+  },
 
   methods: {
     registerAPI: function () {
       this.showAPI = false;
     },
+
+    shuffle: function (){
+let arr = ["liberal", "conservative",
+    "cat", "vampire", "antivaxxer", "provaxxer", "flat earther"]
+    this.variableOne = arr[(Math.floor(Math.random() * arr.length))];
+
+let arr2 = ["https://www.nasa.gov/", "https://www.nvic.org/",
+    "https://www.rowan.edu/"]
+    this.urlToScrape = arr2[(Math.floor(Math.random() * arr2.length))];
+    let randomColor = "#" + (Math.floor(Math.random()*0xffffff)|0x0f0f0f).toString(16);
+var gfg = document.getElementById("variableOneInput");
+            gfg.style.color = randomColor;
+let randomColor2 = "#" + (Math.floor(Math.random()*0xffffff)|0x0f0f0f).toString(16);
+var gfg2 = document.getElementById("URLInput");
+            gfg2.style.color = randomColor2;
+    
+    }, 
+
+    reload: function () {
+      window.location.reload()
+    }, 
 
     checkForGoodToGo: function () {
      if (this.urlToScrape.endsWith("$")) {
@@ -166,6 +229,8 @@ export default {
       img.setAttribute("id", "thinkingIMG");
       img.style.width = "30%";
       document.getElementById("image2").appendChild(img);
+      this.msg4 = ""
+      this.msg = ""
       this.msg2 = "Extracting text...";
       this.status = "";
       if (!this.urlToScrape.endsWith("/")) {
@@ -277,7 +342,7 @@ export default {
     },
 
     getImageBasedOnText: function () {
-      this.msg2 = "Generating image from prompt....";
+      this.msg2 = "Generating image from prompt...";
       const client = axios.create({
         headers: {
           Authorization: "Bearer " + this.apiKEY,
@@ -888,6 +953,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import url("https://fonts.cdnfonts.com/css/lcd");
+@import url('https://fonts.cdnfonts.com/css/8bit-wonder');
 #textEmotion,
 #faceEmotion,
 #voiceEmotion,
@@ -923,17 +989,20 @@ export default {
 }
 
 #variableOneInput {
-  width: 35%;
+  width: 50%;
   text-align: center;
  
-  background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
-  background-size: cover;
-   
+  /* background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
+  background-size: cover; */
+     background-color: black; 
+   border-style: solid;
+  border-color: white;
   font-size: 50px;
   font-weight: bold;
   border-radius: 10px; 
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: rgba(255,255,255,0.4);
+  /* -webkit-background-clip: text;
+  color: orange;  */
+    /* -webkit-text-fill-color: rgba(255,255,255,0.4); */
 }
 #overallMoralFoundatations {
   display: inline-block;
@@ -942,13 +1011,23 @@ export default {
 }
 
 #URLInput {
-  width: 40%;
-  font-size: 25px;
+  width: 70%;
   text-align: left;
-  background-color: #CF9FFF;
-  color: #252627;
-  border: none;
-  padding-left: 5%; 
+  background-color: black; 
+  border-style: none; 
+  text-align: center;
+  border-style: solid;
+  border-color: white; 
+ 
+  /* background: url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2R6ODR2Z3BvdjVqNjNtODY5Z2gycDd2ZjZmZzMydWN5ampqMWx6dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/esMcTxGMz3Hhu/giphy.gif");
+  background-size: cover; */
+   
+  font-size: 50px;
+  font-weight: bold;
+  border-radius: 10px; 
+  /* -webkit-background-clip: text; */
+  color: yellow; 
+  /* -webkit-text-fill-color: rgba(255,255,255,0.4); */
 }
 
 #APIinput {
@@ -968,6 +1047,33 @@ export default {
 }
 
 #startButton:hover {
+  background: #007ba7;
+}
+
+#startButton2 {
+  background: turquoise;
+  font-size: 15px;
+  color: black;
+    border: none;
+margin-left: 5px;
+border-style: none; 
+}
+
+#startButton3 {
+  background: hotpink;
+  font-size: 20px;
+  color: black;
+    border: none;
+    margin-bottom: 5px;
+    border-style: none; 
+
+}
+
+#startButton3:hover {
+  background: #007ba7;
+}
+
+#startButton2:hover {
   background: #007ba7;
 }
 
@@ -1176,6 +1282,7 @@ div {
   margin-top: -3px;
 }
 
+
 #textEmotionChart {
   overflow: auto;
   width: 80%;
@@ -1346,7 +1453,10 @@ a {
   width: 80%;
   display: inline-block;
 }
+.text2 {
+background-color: #d3d3d3;
 
+}
 canvas {
   position: absolute;
   left: 0;
@@ -1407,22 +1517,25 @@ video {
   margin: none;
 }
 .maindiv {
-
-  height: 100%;
 }
 .text {
-  background: url("https://media.giphy.com/media/l0Exe4tRgXZcvSXDy/giphy.gif");
+  /* background: url("https://media.giphy.com/media/l0Exe4tRgXZcvSXDy/giphy.gif");
   background-size: cover;
   -webkit-background-clip: text;
-  color: #00000047;
+  color: #00000047; */
   font-size: 50px;
   font-weight: bold;
+  color: white; 
   
 }
 
 #mainTitle {
-color: hotpink;
-font-size: 100px;
+color: white;
+font-size: 75px;
+background-color: black; 
+font-family: '8BIT WONDER', sans-serif;
 
 }
+
+
 </style>
