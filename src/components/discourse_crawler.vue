@@ -1,6 +1,6 @@
 <template>
   <div id="body" class="dashboard">
-    <h1 class="text2" v-if="showProcess" id="mainTitle">{{ msg }}<br> {{msga}}</h1>
+    <h1 class="text2" v-if="showProcess" id="mainTitle">{{ msg }} {{msga}}</h1><br>
    <p class= "maindiv" v-if="showProcess3" id="messageTwo">
      <section  class="text"> {{msg4}}<br><span class="inputText" ><input
       v-if="showProcess"
@@ -46,7 +46,7 @@
       Set API Key
     </button> -->
     
-    <br /><br />
+  
 
 
 <button v-if="showProcess" id="startButton3" @click="shuffle">
@@ -1531,11 +1531,12 @@ video {
 
 #mainTitle {
 color: white;
-font-size: 75px;
+font-size: 7vw;
 background-color: black; 
 font-family: '8BIT WONDER', sans-serif;
 
 }
+
 
 
 </style>
