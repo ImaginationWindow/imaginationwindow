@@ -1,6 +1,6 @@
 <template>
   <div id="body" class="dashboard">
-    <h1 class="text2" v-if="showProcess" id="mainTitle">{{ msg }} {{msga}}</h1><br>
+    <h1 class="text2" v-if="showProcess" id="mainTitle">{{ msg }} {{msga}}</h1>
    <p class= "maindiv" v-if="showProcess3" id="messageTwo">
      <section  class="text"> {{msg4}}<br><span class="inputText" ><input
       v-if="showProcess"
