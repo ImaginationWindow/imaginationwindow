@@ -185,11 +185,11 @@ window.addEventListener("keypress", function(event) {
 
     shuffle: function (){
 let arr = ["liberal", "conservative",
-    "cat", "vampire", "antivaxxer", "provaxxer", "flat earther"]
+    "cat", "vampire", "antivaxxer", "provaxxer", "flat earther", "judge", "student", "professor", "police officer", "politically independent", "religious person", "atheist"]
     this.variableOne = arr[(Math.floor(Math.random() * arr.length))];
 
 let arr2 = ["https://www.nasa.gov/", "https://www.nvic.org/",
-    "https://www.rowan.edu/"]
+    "https://www.rowan.edu/", "https://www.atlasobscura.com/", "https://www.nautilus.com/", "https://www.space.com/", "https://www.instructables.com/", "https://www.brainpickings.org/", "https://www.uncrate.com/", "https://www.coolhunting.com/", "https://www.thisiscolossal.com/"]
     this.urlToScrape = arr2[(Math.floor(Math.random() * arr2.length))];
     let randomColor = "#" + (Math.floor(Math.random()*0xffffff)|0x0f0f0f).toString(16);
 var gfg = document.getElementById("variableOneInput");
@@ -310,7 +310,7 @@ var gfg2 = document.getElementById("URLInput");
           {
             role: "user",
             content:
-              "In less than seventy five words, describe the themes and topics represented in the following text. Text: " +
+              "In less than three sentences, describe the themes and topics represented in the following text. Text: " +
               this.pageText,
           },
         ],
