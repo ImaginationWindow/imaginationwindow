@@ -189,7 +189,7 @@ let arr = ["liberal", "conservative",
     this.variableOne = arr[(Math.floor(Math.random() * arr.length))];
 
 let arr2 = ["https://www.nasa.gov/", "https://www.nvic.org/",
-    "https://www.rowan.edu/", "https://www.atlasobscura.com/", "https://www.nautilus.com/", "https://www.space.com/", "https://www.instructables.com/", "https://www.brainpickings.org/", "https://www.uncrate.com/", "https://www.coolhunting.com/", "https://www.thisiscolossal.com/"]
+    "https://www.rowan.edu/", "https://www.atlasobscura.com/", "https://www.nautilus.com/", "https://www.space.com/", "https://www.instructables.com/", git stat"https://www.coolhunting.com/", "https://www.thisiscolossal.com/"]
     this.urlToScrape = arr2[(Math.floor(Math.random() * arr2.length))];
     let randomColor = "#" + (Math.floor(Math.random()*0xffffff)|0x0f0f0f).toString(16);
 var gfg = document.getElementById("variableOneInput");
